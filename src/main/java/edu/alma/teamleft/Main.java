@@ -1,6 +1,5 @@
 package edu.alma.teamleft;
 
-import edu.alma.teamleft.tables.PreferredContact;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -11,18 +10,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static edu.alma.teamleft.Tables.*;
+import static edu.alma.teamleft.Tables.PREFERRED_CONTACT;
 
 public class Main {
     public static final String PASSWORD = System.getenv("PASSWORD");
+    public static final String USER_NAME = System.getenv("USER_NAME");
     public static void main(String[] args){
 
-        final String USER_NAME = "postgres";
         final String URL = "jdbc:postgresql://localhost/eightcap";
 
-
         System.out.println("Hello World");
-
 
         try (Connection conn = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
             DSLContext create = DSL.using(conn, SQLDialect.POSTGRES);

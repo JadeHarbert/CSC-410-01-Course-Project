@@ -44,8 +44,10 @@
           <jdbc>
             <driver>org.postgresql.Driver</driver>
             <url>jdbc:postgresql://localhost/eightcap</url>
-            <user>postgres</user>
-            <password>m!chael2001</password>
+            <!--suppress UnresolvedMavenProperty -->
+            <user>${env.USER_NAME}</user>
+            <!--suppress UnresolvedMavenProperty -->
+            <password>${env.PASSWORD}</password>
           </jdbc>
 
           <!-- Generator parameters -->
