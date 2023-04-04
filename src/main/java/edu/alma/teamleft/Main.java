@@ -13,20 +13,23 @@ import java.sql.SQLException;
 import static edu.alma.teamleft.Tables.PREFERRED_CONTACT;
 
 public class Main {
-    public static final String PASSWORD = System.getenv("PASSWORD");
-    public static final String USER_NAME = System.getenv("USER_NAME");
+    public static final String PASSWORD = System.getenv("PG_PASSWORD");
+    public static final String USER_NAME = System.getenv("PG_USERNAME");
     public static void main(String[] args){
 
         final String URL = "jdbc:postgresql://localhost/eightcap";
 
-        System.out.println("Hello World");
-
         try (Connection conn = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+            System.out.println("Successfully Connected to the Database");
+
             DSLContext create = DSL.using(conn, SQLDialect.POSTGRES);
+
+            // Simple select statement to test connection
             Result<Record> result = create
                     .select()
                     .from(PREFERRED_CONTACT)
                     .fetch();
+            
             for (Record r : result){
                 String method = r.getValue(PREFERRED_CONTACT.CONTACT_METHOD);
                 System.out.println("Method: " + method);
