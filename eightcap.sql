@@ -426,7 +426,8 @@ CREATE TABLE public.ticket (
     call_date timestamp without time zone NOT NULL,
     status_id integer,
     service_type_id integer,
-    notes character varying(1000)
+    notes character varying(1000),
+    email character varying(50)
 );
 
 
@@ -651,7 +652,7 @@ COPY public.status (status_id, status_name) FROM stdin;
 -- Data for Name: ticket; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.ticket (ticket_id, subject, details, client_id, creator_of_ticket, entry_date, call_date, status_id, service_type_id, notes) FROM stdin;
+COPY public.ticket (ticket_id, subject, details, client_id, creator_of_ticket, entry_date, call_date, status_id, service_type_id, notes, email) FROM stdin;
 \.
 
 
