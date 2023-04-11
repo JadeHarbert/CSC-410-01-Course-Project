@@ -65,5 +65,89 @@ public class ticketdatabase {
                 .where(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch());
     }
+
+    public static Result<Record> SelectTicketWithIDAndSubject(){
+        return(create.select()
+                .from(Ticket.TICKET)
+                .where(Ticket.TICKET.CLIENT_ID.eq(SelectedClientid))
+                .and(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
+                .fetch());
+    }
+
+    public static Result<Record> SelectTicketWithIDAndStatus(){
+        return(create.select()
+                .from(Ticket.TICKET)
+                .where(Ticket.TICKET.CLIENT_ID.eq(SelectedClientid))
+                .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
+                .fetch());
+    }
+
+    public static Result<Record> SelectTicketWithIDAndService(){
+        return(create.select()
+                .from(Ticket.TICKET)
+                .where(Ticket.TICKET.CLIENT_ID.eq(SelectedClientid))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
+                .fetch());
+    }
+
+    public static Result<Record> SelectTicketWithSubjectAndStatus(){
+        return(create.select()
+                .from(Ticket.TICKET)
+                .where(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
+                .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
+                .fetch());
+    }
+
+    public static Result<Record> SelectTicketWithSubjectAndService(){
+        return(create.select()
+                .from(Ticket.TICKET)
+                .where(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
+                .fetch());
+    }
+
+    public static Result<Record> SelectTicketWithStatusAndService(){
+        return(create.select()
+                .from(Ticket.TICKET)
+                .where(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
+                .fetch());
+    }
+
+    public static Result<Record> SelectTicketWithIDAndSubjectAndStatus(){
+        return(create.select()
+                .from(Ticket.TICKET)
+                .where(Ticket.TICKET.CLIENT_ID.eq(SelectedClientid))
+                .and(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
+                .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
+                .fetch());
+    }
+
+    public static Result<Record> SelectTicketWithIDAndSubjectAndService(){
+        return(create.select()
+                .from(Ticket.TICKET)
+                .where(Ticket.TICKET.CLIENT_ID.eq(SelectedClientid))
+                .and(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
+                .fetch());
+    }
+
+    public static Result<Record> SelectTicketWithIDAndStatusAndService(){
+        return(create.select()
+                .from(Ticket.TICKET)
+                .where(Ticket.TICKET.CLIENT_ID.eq(SelectedClientid))
+                .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
+                .fetch());
+    }
+
+    public static Result<Record> SelectTicketWithSubjectAndStatusAndService(){
+        return(create.select()
+                .from(Ticket.TICKET)
+                .where(Ticket.TICKET.CLIENT_ID.eq(SelectedClientid))
+                .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
+                .fetch());
+    }
     public ticketdatabase() throws SQLException {
     }}
