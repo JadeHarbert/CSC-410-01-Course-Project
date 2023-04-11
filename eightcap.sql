@@ -105,7 +105,8 @@ CREATE TABLE public.client (
     datetime_of_entry timestamp without time zone NOT NULL,
     prescreen_date date,
     dba_id integer,
-    hmis integer
+    hmis integer,
+    notes character varying(1000)
 );
 
 
@@ -424,7 +425,8 @@ CREATE TABLE public.ticket (
     entry_date timestamp without time zone NOT NULL,
     call_date timestamp without time zone NOT NULL,
     status_id integer,
-    service_type_id integer
+    service_type_id integer,
+    notes character varying(1000)
 );
 
 
@@ -559,7 +561,7 @@ COPY public.address_type (address_type_id, address_type) FROM stdin;
 -- Data for Name: client; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.client (client_id, first_name, last_name, date_of_birth, datetime_of_entry, prescreen_date, dba_id, hmis) FROM stdin;
+COPY public.client (client_id, first_name, last_name, date_of_birth, datetime_of_entry, prescreen_date, dba_id, hmis, notes) FROM stdin;
 \.
 
 
@@ -649,7 +651,7 @@ COPY public.status (status_id, status_name) FROM stdin;
 -- Data for Name: ticket; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.ticket (ticket_id, subject, details, client_id, creator_of_ticket, entry_date, call_date, status_id, service_type_id) FROM stdin;
+COPY public.ticket (ticket_id, subject, details, client_id, creator_of_ticket, entry_date, call_date, status_id, service_type_id, notes) FROM stdin;
 \.
 
 
