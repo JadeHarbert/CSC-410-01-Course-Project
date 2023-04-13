@@ -1,7 +1,8 @@
 package edu.alma.teamleft;
 
-import org.jooq.*;
-import org.jooq.Record;
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
 import java.sql.Connection;
@@ -9,10 +10,9 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Random;
+
 
 import static edu.alma.teamleft.Tables.*;
-import static org.jooq.impl.DSL.currentDate;
 import static org.jooq.impl.DSL.date;
 
 public class Main {
@@ -26,6 +26,7 @@ public class Main {
             System.out.println("Successfully Connected to the Database");
 
             DSLContext create = DSL.using(conn, SQLDialect.POSTGRES);
+            addPhoneNumber("2", conn);
 
 
 //            // Simple select statement to test connection
