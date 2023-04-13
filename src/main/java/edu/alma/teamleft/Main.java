@@ -11,7 +11,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static edu.alma.teamleft.Tables.PREFERRED_CONTACT;
-import static edu.alma.teamleft.ticketdatabase.SelectAllTickets;
+import static edu.alma.teamleft.ticketdatabase.*;
 
 
 public class Main {
