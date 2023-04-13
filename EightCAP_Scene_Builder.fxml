@@ -646,19 +646,19 @@
                                                    <content>
                                                       <TableView>
                                                         <columns>
-                                                          <TableColumn prefWidth="75.0" text="ID" />
-                                                          <TableColumn prefWidth="75.0" text="First Name" />
-                                                            <TableColumn prefWidth="75.0" text="E-mail" />
-                                                            <TableColumn prefWidth="75.0" text="Phone Number" />
-                                                            <TableColumn prefWidth="75.0" text="Date of Birth" />
-                                                            <TableColumn prefWidth="75.0" text="County" />
-                                                            <TableColumn prefWidth="75.0" text="Address" />
-                                                            <TableColumn prefWidth="75.0" text="Preferred Contact Method" />
-                                                            <TableColumn prefWidth="75.0" text="DBA ID" />
-                                                            <TableColumn prefWidth="75.0" text="HMIS ID" />
-                                                            <TableColumn prefWidth="75.0" text="Prescreen Date" />
-                                                            <TableColumn prefWidth="75.0" text="Date Of Entry" />
-                                                            <TableColumn prefWidth="75.0" text="Notes" />
+                                                          <TableColumn fx:id="dbClientIDColumn" prefWidth="75.0" text="ID" />
+                                                          <TableColumn fx:id="dbClientFirstNameColumn" prefWidth="75.0" text="First Name" />
+                                                            <TableColumn fx:id="dbClientEmailColumn" prefWidth="75.0" text="E-mail" />
+                                                            <TableColumn fx:id="dbClientPhoneNumberColumn" prefWidth="75.0" text="Phone Number" />
+                                                            <TableColumn fx:id="dbClientDOBColumn" prefWidth="75.0" text="Date of Birth" />
+                                                            <TableColumn fx:id="dbClientCountyColumn" prefWidth="75.0" text="County" />
+                                                            <TableColumn fx:id="dbClientAddressColumn" prefWidth="75.0" text="Address" />
+                                                            <TableColumn fx:id="dbClientPCMColumn" prefWidth="75.0" text="Preferred Contact Method" />
+                                                            <TableColumn fx:id="dbClinetDBAColumn" prefWidth="75.0" text="DBA ID" />
+                                                            <TableColumn fx:id="dbClientHMISColumn" prefWidth="75.0" text="HMIS ID" />
+                                                            <TableColumn fx:id="dbClientPrescreenColumn" prefWidth="75.0" text="Prescreen Date" />
+                                                            <TableColumn fx:id="dbClientDOEColumn" prefWidth="75.0" text="Date Of Entry" />
+                                                            <TableColumn fx:id="dbClientNotesColumn" prefWidth="75.0" text="Notes" />
                                                         </columns>
                                                       </TableView>
                                                    </content>
@@ -821,14 +821,14 @@
                                                    <content>
                                                       <TableView>
                                                          <columns>
-                                                            <TableColumn prefWidth="75.0" text="ID" />
-                                                            <TableColumn prefWidth="75.0" text="Subject" />
-                                                            <TableColumn prefWidth="75.0" text="Client" />
-                                                            <TableColumn prefWidth="75.0" text="Creator Of Ticket" />
-                                                            <TableColumn prefWidth="75.0" text="Call" />
-                                                            <TableColumn prefWidth="75.0" text="Status" />
-                                                            <TableColumn prefWidth="75.0" text="Service " />
-                                                            <TableColumn prefWidth="75.0" text="Turn Around Time" />
+                                                            <TableColumn fx:id="dbTicketIDColumn" prefWidth="75.0" text="ID" />
+                                                            <TableColumn fx:id="dbTicketSubjectColumn" prefWidth="75.0" text="Subject" />
+                                                            <TableColumn fx:id="dbTicketClientColumn" prefWidth="75.0" text="Client" />
+                                                            <TableColumn fx:id="dbTicketCOTColumn" prefWidth="75.0" text="Creator Of Ticket" />
+                                                            <TableColumn fx:id="dbTicketCallColumn" prefWidth="75.0" text="Call" />
+                                                            <TableColumn fx:id="dbTicketStatusColumn" prefWidth="75.0" text="Status" />
+                                                            <TableColumn fx:id="dbTicketServiceColumn" prefWidth="75.0" text="Service " />
+                                                            <TableColumn fx:id="dbTicketTATColumn" prefWidth="75.0" text="Turn Around Time" />
                                                          </columns>
                                                       </TableView>
                                                    </content>
@@ -960,10 +960,10 @@
                                                    <content>
                                                       <TableView>
                                                          <columns>
-                                                            <TableColumn prefWidth="75.0" text="ID" />
-                                                            <TableColumn prefWidth="75.0" text="Ticket ID" />
-                                                            <TableColumn prefWidth="75.0" text="Date" />
-                                                            <TableColumn prefWidth="75.0" text="Outcome" />
+                                                            <TableColumn fx:id="dbFollowUpIDColumn" prefWidth="75.0" text="ID" />
+                                                            <TableColumn fx:id="dbFollowUpTicketIDColumn" prefWidth="75.0" text="Ticket ID" />
+                                                            <TableColumn fx:id="dbFollowUpDateColumn" prefWidth="75.0" text="Date" />
+                                                            <TableColumn fx:id="dbFollowUpOutcomeColumn" prefWidth="75.0" text="Outcome" />
                                                          </columns>
                                                       </TableView>
                                                    </content>
