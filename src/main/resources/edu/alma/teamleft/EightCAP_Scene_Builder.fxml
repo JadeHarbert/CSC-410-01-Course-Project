@@ -387,7 +387,7 @@
                                                                                     <Insets right="5.0" />
                                                                                  </HBox.margin>
                                                                               </Text>
-                                                                              <TextField fx:id="dbClientID">
+                                                                              <TextField fx:id="dbClientID2">
                                                                                  <HBox.margin>
                                                                                     <Insets />
                                                                                  </HBox.margin>
