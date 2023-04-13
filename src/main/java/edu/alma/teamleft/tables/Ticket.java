@@ -15,12 +15,12 @@ import java.util.function.Function;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function9;
+import org.jooq.Function10;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row9;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -97,6 +97,11 @@ public class Ticket extends TableImpl<TicketRecord> {
      * The column <code>public.ticket.service_type_id</code>.
      */
     public final TableField<TicketRecord, Integer> SERVICE_TYPE_ID = createField(DSL.name("service_type_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.ticket.notes</code>.
+     */
+    public final TableField<TicketRecord, String> NOTES = createField(DSL.name("notes"), SQLDataType.VARCHAR(1000), this, "");
 
     private Ticket(Name alias, Table<TicketRecord> aliased) {
         this(alias, aliased, null);
@@ -236,18 +241,18 @@ public class Ticket extends TableImpl<TicketRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, String, String, Integer, Integer, LocalDateTime, LocalDateTime, Integer, Integer> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row10<Integer, String, String, Integer, Integer, LocalDateTime, LocalDateTime, Integer, Integer, String> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function9<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? super LocalDateTime, ? super LocalDateTime, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function10<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? super LocalDateTime, ? super LocalDateTime, ? super Integer, ? super Integer, ? super String, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -255,7 +260,7 @@ public class Ticket extends TableImpl<TicketRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? super LocalDateTime, ? super LocalDateTime, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function10<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? super LocalDateTime, ? super LocalDateTime, ? super Integer, ? super Integer, ? super String, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

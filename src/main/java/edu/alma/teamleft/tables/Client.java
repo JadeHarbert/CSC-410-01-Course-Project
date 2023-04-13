@@ -16,12 +16,12 @@ import java.util.function.Function;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function8;
+import org.jooq.Function12;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row8;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -94,6 +94,26 @@ public class Client extends TableImpl<ClientRecord> {
      */
     public final TableField<ClientRecord, Integer> HMIS = createField(DSL.name("hmis"), SQLDataType.INTEGER, this, "");
 
+    /**
+     * The column <code>public.client.notes</code>.
+     */
+    public final TableField<ClientRecord, String> NOTES = createField(DSL.name("notes"), SQLDataType.VARCHAR(1000), this, "");
+
+    /**
+     * The column <code>public.client.email</code>.
+     */
+    public final TableField<ClientRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.client.county_id</code>.
+     */
+    public final TableField<ClientRecord, Integer> COUNTY_ID = createField(DSL.name("county_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.client.preferred_contact_id</code>.
+     */
+    public final TableField<ClientRecord, Integer> PREFERRED_CONTACT_ID = createField(DSL.name("preferred_contact_id"), SQLDataType.INTEGER, this, "");
+
     private Client(Name alias, Table<ClientRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -143,6 +163,35 @@ public class Client extends TableImpl<ClientRecord> {
     }
 
     @Override
+    public List<ForeignKey<ClientRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.CLIENT__FK_CLIENT_COUNTY, Keys.CLIENT__FK_CLIENT_PREFERRED_CONTACT);
+    }
+
+    private transient County _county;
+    private transient PreferredContact _preferredContact;
+
+    /**
+     * Get the implicit join path to the <code>public.county</code> table.
+     */
+    public County county() {
+        if (_county == null)
+            _county = new County(this, Keys.CLIENT__FK_CLIENT_COUNTY);
+
+        return _county;
+    }
+
+    /**
+     * Get the implicit join path to the <code>public.preferred_contact</code>
+     * table.
+     */
+    public PreferredContact preferredContact() {
+        if (_preferredContact == null)
+            _preferredContact = new PreferredContact(this, Keys.CLIENT__FK_CLIENT_PREFERRED_CONTACT);
+
+        return _preferredContact;
+    }
+
+    @Override
     public Client as(String alias) {
         return new Client(DSL.name(alias), this);
     }
@@ -182,18 +231,18 @@ public class Client extends TableImpl<ClientRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, String, LocalDate, LocalDateTime, LocalDate, Integer, Integer> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row12<Integer, String, String, LocalDate, LocalDateTime, LocalDate, Integer, Integer, String, String, Integer, Integer> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function8<? super Integer, ? super String, ? super String, ? super LocalDate, ? super LocalDateTime, ? super LocalDate, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function12<? super Integer, ? super String, ? super String, ? super LocalDate, ? super LocalDateTime, ? super LocalDate, ? super Integer, ? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -201,7 +250,7 @@ public class Client extends TableImpl<ClientRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super Integer, ? super String, ? super String, ? super LocalDate, ? super LocalDateTime, ? super LocalDate, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function12<? super Integer, ? super String, ? super String, ? super LocalDate, ? super LocalDateTime, ? super LocalDate, ? super Integer, ? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
