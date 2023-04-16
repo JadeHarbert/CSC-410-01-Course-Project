@@ -32,32 +32,12 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox prefHeight="530.0" prefWidth="1007.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-   fx:controller="edu.alma.teamleft.EightCAPController">
+<VBox prefHeight="530.0" prefWidth="1007.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.alma.teamleft.EightCAPController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -720,7 +700,7 @@
                                                 <Insets right="5.0" />
                                              </HBox.margin>
                                           </Text>
-                                          <TextField fx:id="ticketSubject" />
+                                          <TextField fx:id="ticketSubject" accessibleRole="TEXT_FIELD" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER" prefHeight="115.0" prefWidth="343.0">
@@ -740,21 +720,7 @@
                                                 <Insets right="10.0" />
                                              </HBox.margin>
                                           </Text>
-                                          <Text fx:id="ticketClient" strokeType="OUTSIDE" strokeWidth="0.0" text="Client">
-                                             <HBox.margin>
-                                                <Insets right="5.0" />
-                                             </HBox.margin>
-                                          </Text>
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER" prefHeight="38.0" prefWidth="343.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Status">
-                                             <HBox.margin>
-                                                <Insets right="5.0" />
-                                             </HBox.margin>
-                                          </Text>
-                                          <ChoiceBox fx:id="ticketStatus" prefWidth="150.0" />
+                                          <TextField fx:id="ticketClient" accessibleRole="TEXT_FIELD" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER" prefHeight="38.0" prefWidth="343.0">

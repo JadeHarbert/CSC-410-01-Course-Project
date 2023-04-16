@@ -21,8 +21,8 @@ public class ticketdatabase {
     static final String URL = "jdbc:postgresql://localhost/EightCAP";
     public static String SelectedClientid;
     public static String SelectedSubject;
-    public static String SelectedStatus;
-    public static String SelectedService;
+    public static Integer SelectedStatus;
+    public static Integer SelectedService;
     static Connection conn;
     public static Result results;
 
@@ -50,6 +50,7 @@ public class ticketdatabase {
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
                 .fetch();
+        System.out.println(results);
         return results;
     }
 
@@ -58,22 +59,26 @@ public class ticketdatabase {
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
                 .fetch();
+        System.out.println(results);
         return results;
     }
 
     public static Result<Record> SelectTicketWithStatus(){
         results = create.select()
                 .from(Ticket.TICKET)
-                .where(Ticket.TICKET.STATUS_ID.eq(parseInt(SelectedStatus)))
+                .where(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
                 .fetch();
+        System.out.println(SelectedStatus);
+        System.out.println(results);
         return results;
     }
 
     public static Result<Record> SelectTicketWithService(){
         results = create.select()
                 .from(Ticket.TICKET)
-                .where(Ticket.TICKET.SERVICE_TYPE_ID.eq(parseInt(SelectedService)))
+                .where(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
+        System.out.println(results);
         return results;
     }
 
@@ -83,6 +88,7 @@ public class ticketdatabase {
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
                 .and(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
                 .fetch();
+        System.out.println(results);
         return results;
     }
 
@@ -90,8 +96,9 @@ public class ticketdatabase {
         results = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
-                .and(Ticket.TICKET.STATUS_ID.eq(parseInt(SelectedStatus)))
+                .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
                 .fetch();
+        System.out.println(results);
         return results;
     }
 
@@ -99,8 +106,9 @@ public class ticketdatabase {
         results = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
-                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(parseInt(SelectedService)))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
+        System.out.println(results);
         return results;
     }
 
@@ -108,8 +116,9 @@ public class ticketdatabase {
         results = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
-                .and(Ticket.TICKET.STATUS_ID.eq(parseInt(SelectedStatus)))
+                .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
                 .fetch();
+        System.out.println(results);
         return results;
     }
 
@@ -117,17 +126,19 @@ public class ticketdatabase {
         results = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
-                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(parseInt(SelectedService)))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
+        System.out.println(results);
         return results;
     }
 
     public static Result<Record> SelectTicketWithStatusAndService(){
         results = create.select()
                 .from(Ticket.TICKET)
-                .where(Ticket.TICKET.STATUS_ID.eq(parseInt(SelectedStatus)))
-                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(parseInt(SelectedService)))
+                .where(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
+        System.out.println(results);
         return results;
     }
 
@@ -136,8 +147,9 @@ public class ticketdatabase {
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
                 .and(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
-                .and(Ticket.TICKET.STATUS_ID.eq(parseInt(SelectedStatus)))
+                .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
                 .fetch();
+        System.out.println(results);
         return results;
     }
 
@@ -146,8 +158,9 @@ public class ticketdatabase {
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
                 .and(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
-                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(parseInt(SelectedService)))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
+        System.out.println(results);
         return results;
     }
 
@@ -155,9 +168,10 @@ public class ticketdatabase {
         results = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
-                .and(Ticket.TICKET.STATUS_ID.eq(parseInt(SelectedStatus)))
-                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(parseInt(SelectedService)))
+                .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
+        System.out.println(results);
         return results;
     }
 
@@ -165,19 +179,21 @@ public class ticketdatabase {
         results = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.SUBJECT.eq(SelectedSubject))
-                .and(Ticket.TICKET.STATUS_ID.eq(parseInt(SelectedStatus)))
-                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(parseInt(SelectedService)))
+                .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
+        System.out.println(results);
         return results;
     }
     public static Result<Record> SelectTicketWithAll(){
         results = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
-                .and(Ticket.TICKET.STATUS_ID.eq(parseInt(SelectedStatus)))
-                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(parseInt(SelectedService)))
+                .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
+                .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .and(Ticket.TICKET.SUBJECT.eq(SelectedSubject))
                 .fetch();
+        System.out.println(results);
         return results;
     }
     public ticketdatabase() throws SQLException {

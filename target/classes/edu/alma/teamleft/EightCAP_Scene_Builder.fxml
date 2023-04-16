@@ -39,6 +39,45 @@
 
 <VBox prefHeight="530.0" prefWidth="1007.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.alma.teamleft.EightCAPController">
   <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" text="New" />
+            <MenuItem mnemonicParsing="false" text="Open…" />
+            <Menu mnemonicParsing="false" text="Open Recent" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Close" />
+            <MenuItem mnemonicParsing="false" text="Save" />
+            <MenuItem mnemonicParsing="false" text="Save As…" />
+            <MenuItem mnemonicParsing="false" text="Revert" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Preferences…" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Quit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Undo" />
+            <MenuItem mnemonicParsing="false" text="Redo" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Cut" />
+            <MenuItem mnemonicParsing="false" text="Copy" />
+            <MenuItem mnemonicParsing="false" text="Paste" />
+            <MenuItem mnemonicParsing="false" text="Delete" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Select All" />
+            <MenuItem mnemonicParsing="false" text="Unselect All" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
         <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" text="Drag components from Library here…" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
@@ -332,7 +371,7 @@
                         </ScrollPane>
                   </content>
                 </Tab>
-                  <Tab fx:id="ClientID" text="Client Database">
+                  <Tab fx:id="dbClientID" text="Client Database">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
@@ -340,7 +379,7 @@
                                  <children>
                                     <Accordion prefHeight="576.0" prefWidth="1007.0">
                                       <panes>
-                                        <TitledPane animated="false" prefHeight="183.0" prefWidth="1007.0" text="Filter">
+                                        <TitledPane animated="false" prefHeight="37.0" prefWidth="1007.0" text="Filter">
                                              <content>
                                                 <ScrollPane prefHeight="292.0" prefWidth="1005.0">
                                                    <content>
@@ -357,11 +396,6 @@
                                                                                     <Insets right="5.0" />
                                                                                  </HBox.margin>
                                                                               </Text>
-                                                                              <TextField fx:id="dbClientID">
-                                                                                 <HBox.margin>
-                                                                                    <Insets />
-                                                                                 </HBox.margin>
-                                                                              </TextField>
                                                                            </children>
                                                                         </HBox>
                                                                         <HBox alignment="CENTER_RIGHT" prefHeight="21.0" prefWidth="241.0">
@@ -625,33 +659,29 @@
                                                 </ScrollPane>
                                              </content>
                                         </TitledPane>
-                                          <TitledPane prefHeight="770.0" prefWidth="1007.0" text="Database">
-                                             <content>
-                                                <ScrollPane>
-                                                   <content>
-                                                      <TableView>
-                                                        <columns>
-                                                          <TableColumn fx:id="dbClientIDColumn" prefWidth="75.0" text="ID" />
-                                                          <TableColumn fx:id="dbClientFirstNameColumn" prefWidth="75.0" text="First Name" />
-                                                            <TableColumn fx:id="dbClientEmailColumn" prefWidth="75.0" text="E-mail" />
-                                                            <TableColumn fx:id="dbClientPhoneNumberColumn" prefWidth="75.0" text="Phone Number" />
-                                                            <TableColumn fx:id="dbClientDOBColumn" prefWidth="75.0" text="Date of Birth" />
-                                                            <TableColumn fx:id="dbClientCountyColumn" prefWidth="75.0" text="County" />
-                                                            <TableColumn fx:id="dbClientAddressColumn" prefWidth="75.0" text="Address" />
-                                                            <TableColumn fx:id="dbClientPCMColumn" prefWidth="75.0" text="Preferred Contact Method" />
-                                                            <TableColumn fx:id="dbClinetDBAColumn" prefWidth="75.0" text="DBA ID" />
-                                                            <TableColumn fx:id="dbClientHMISColumn" prefWidth="75.0" text="HMIS ID" />
-                                                            <TableColumn fx:id="dbClientPrescreenColumn" prefWidth="75.0" text="Prescreen Date" />
-                                                            <TableColumn fx:id="dbClientDOEColumn" prefWidth="75.0" text="Date Of Entry" />
-                                                            <TableColumn fx:id="dbClientNotesColumn" prefWidth="75.0" text="Notes" />
-                                                        </columns>
-                                                      </TableView>
-                                                   </content>
-                                                </ScrollPane>
-                                             </content>
-                                          </TitledPane>
                                       </panes>
                                     </Accordion>
+                                    <ScrollPane>
+                                       <content>
+                                          <TableView>
+                                            <columns>
+                                              <TableColumn prefWidth="75.0" text="ID" />
+                                              <TableColumn prefWidth="75.0" text="First Name" />
+                                                <TableColumn prefWidth="75.0" text="E-mail" />
+                                                <TableColumn prefWidth="75.0" text="Phone Number" />
+                                                <TableColumn prefWidth="75.0" text="Date of Birth" />
+                                                <TableColumn prefWidth="75.0" text="County" />
+                                                <TableColumn prefWidth="75.0" text="Address" />
+                                                <TableColumn prefWidth="75.0" text="Preferred Contact Method" />
+                                                <TableColumn prefWidth="75.0" text="DBA ID" />
+                                                <TableColumn prefWidth="75.0" text="HMIS ID" />
+                                                <TableColumn prefWidth="75.0" text="Prescreen Date" />
+                                                <TableColumn prefWidth="75.0" text="Date Of Entry" />
+                                                <TableColumn prefWidth="75.0" text="Notes" />
+                                            </columns>
+                                          </TableView>
+                                       </content>
+                                    </ScrollPane>
                                  </children>
                               </VBox>
                            </children></AnchorPane>
@@ -670,7 +700,7 @@
                                                 <Insets right="5.0" />
                                              </HBox.margin>
                                           </Text>
-                                          <TextField fx:id="ticketSubject" />
+                                          <TextField fx:id="ticketSubject" accessibleRole="TEXT_FIELD" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER" prefHeight="115.0" prefWidth="343.0">
@@ -690,21 +720,7 @@
                                                 <Insets right="10.0" />
                                              </HBox.margin>
                                           </Text>
-                                          <Text fx:id="ticketClient" strokeType="OUTSIDE" strokeWidth="0.0" text="Client">
-                                             <HBox.margin>
-                                                <Insets right="5.0" />
-                                             </HBox.margin>
-                                          </Text>
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER" prefHeight="38.0" prefWidth="343.0">
-                                       <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Status">
-                                             <HBox.margin>
-                                                <Insets right="5.0" />
-                                             </HBox.margin>
-                                          </Text>
-                                          <ChoiceBox fx:id="ticketStatus" prefWidth="150.0" />
+                                          <TextField fx:id="ticketClient" accessibleRole="TEXT_FIELD" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER" prefHeight="38.0" prefWidth="343.0">
@@ -737,7 +753,7 @@
                            <children>
                               <VBox prefHeight="432.0" prefWidth="721.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <Accordion prefHeight="501.0" prefWidth="1007.0">
+                                    <Accordion prefHeight="394.0" prefWidth="1007.0">
                                        <panes>
                                           <TitledPane animated="false" prefHeight="37.0" prefWidth="1007.0" text="Filter">
                                              <content>
@@ -800,28 +816,24 @@
                                                 </ScrollPane>
                                              </content>
                                           </TitledPane>
-                                          <TitledPane prefHeight="767.0" prefWidth="1007.0" text="Database">
-                                             <content>
-                                                <ScrollPane>
-                                                   <content>
-                                                      <TableView fx:id="TicketDatabase">
-                                                         <columns>
-                                                            <TableColumn fx:id="dbTicketIDColumn" prefWidth="75.0" text="ID" />
-                                                            <TableColumn fx:id="dbTicketSubjectColumn" prefWidth="75.0" text="Subject" />
-                                                            <TableColumn fx:id="dbTicketClientColumn" prefWidth="75.0" text="Client" />
-                                                            <TableColumn fx:id="dbTicketCOTColumn" prefWidth="75.0" text="Creator Of Ticket" />
-                                                            <TableColumn fx:id="dbTicketCallDateColumn" prefWidth="75.0" text="Call Date" />
-                                                            <TableColumn fx:id="dbTicketStatusColumn" prefWidth="75.0" text="Status" />
-                                                            <TableColumn fx:id="dbTicketServiceColumn" prefWidth="75.0" text="Service " />
-<!--                                                            <TableColumn fx:id="dbTicketTATColumn" prefWidth="75.0" text="Turn Around Time" />-->
-                                                         </columns>
-                                                      </TableView>
-                                                   </content>
-                                                </ScrollPane>
-                                             </content>
-                                          </TitledPane>
                                        </panes>
                                     </Accordion>
+                                    <ScrollPane>
+                                       <content>
+                                          <TableView>
+                                             <columns>
+                                                <TableColumn prefWidth="75.0" text="ID" />
+                                                <TableColumn prefWidth="75.0" text="Subject" />
+                                                <TableColumn prefWidth="75.0" text="Client" />
+                                                <TableColumn prefWidth="75.0" text="Creator Of Ticket" />
+                                                <TableColumn prefWidth="75.0" text="Call" />
+                                                <TableColumn prefWidth="75.0" text="Status" />
+                                                <TableColumn prefWidth="75.0" text="Service " />
+                                                <TableColumn prefWidth="75.0" text="Turn Around Time" />
+                                             </columns>
+                                          </TableView>
+                                       </content>
+                                    </ScrollPane>
                                  </children>
                               </VBox>
                            </children>
@@ -877,7 +889,7 @@
                            <children>
                               <VBox prefHeight="432.0" prefWidth="721.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <Accordion prefHeight="501.0" prefWidth="1007.0">
+                                    <Accordion prefHeight="394.0" prefWidth="1007.0">
                                        <panes>
                                           <TitledPane animated="false" prefHeight="37.0" prefWidth="1007.0" text="Filter">
                                              <content>
@@ -939,24 +951,20 @@
                                                 </ScrollPane>
                                              </content>
                                           </TitledPane>
-                                          <TitledPane text="Database">
-                                             <content>
-                                                <ScrollPane>
-                                                   <content>
-                                                      <TableView>
-                                                         <columns>
-                                                            <TableColumn fx:id="dbFollowUpIDColumn" prefWidth="75.0" text="ID" />
-                                                            <TableColumn fx:id="dbFollowUpTicketIDColumn" prefWidth="75.0" text="Ticket ID" />
-                                                            <TableColumn fx:id="dbFollowUpDateColumn" prefWidth="75.0" text="Date" />
-                                                            <TableColumn fx:id="dbFollowUpOutcomeColumn" prefWidth="75.0" text="Outcome" />
-                                                         </columns>
-                                                      </TableView>
-                                                   </content>
-                                                </ScrollPane>
-                                             </content>
-                                          </TitledPane>
                                        </panes>
                                     </Accordion>
+                                    <ScrollPane>
+                                       <content>
+                                          <TableView>
+                                             <columns>
+                                                <TableColumn prefWidth="75.0" text="ID" />
+                                                <TableColumn prefWidth="75.0" text="Ticket ID" />
+                                                <TableColumn prefWidth="75.0" text="Date" />
+                                                <TableColumn prefWidth="75.0" text="Outcome" />
+                                             </columns>
+                                          </TableView>
+                                       </content>
+                                    </ScrollPane>
                                  </children>
                               </VBox>
                            </children>
