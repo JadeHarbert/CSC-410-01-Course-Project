@@ -20,7 +20,7 @@ public class Main {
     public static final String USER_NAME = System.getenv("PG_USERNAME");
     public static void main(String[] args){
 
-        final String URL = "jdbc:postgresql://localhost/eightcap";
+        final String URL = "jdbc:postgresql://localhost/EightCAP";
 
         try (Connection conn = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
             System.out.println("Successfully Connected to the Database");

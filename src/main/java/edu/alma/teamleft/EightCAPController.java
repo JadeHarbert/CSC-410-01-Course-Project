@@ -6,10 +6,10 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.jooq.Record;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -123,5 +123,4 @@ public class EightCAPController {
     protected void FollowUpSearch() {
 
     }
-
 }
