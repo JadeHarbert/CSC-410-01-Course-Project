@@ -911,4 +911,3 @@ ALTER TABLE ONLY public.ticket
 --
 -- PostgreSQL database dump complete
 --
-
