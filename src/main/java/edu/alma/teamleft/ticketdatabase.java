@@ -1,14 +1,12 @@
 package edu.alma.teamleft;
 
 import edu.alma.teamleft.tables.Ticket;
-import javafx.scene.control.TableView;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-import javax.security.auth.Subject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -24,7 +22,7 @@ public class ticketdatabase {
     public static Integer SelectedStatus;
     public static Integer SelectedService;
     static Connection conn;
-    public static Result results;
+    public static Result TicketSearchResults;
 
 
     static {
@@ -38,163 +36,163 @@ public class ticketdatabase {
     static DSLContext create = DSL.using(conn, SQLDialect.POSTGRES);
 
     public static Result<Record> SelectAllTickets(){
-            results = create.select()
+            TicketSearchResults = create.select()
                     .from(Ticket.TICKET)
                     .fetch();
-        System.out.println(results);
-            return results;
+        System.out.println(TicketSearchResults);
+            return TicketSearchResults;
 }
 
     public static Result<Record> SelectTicketWithID(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithSubject(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithStatus(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
                 .fetch();
         System.out.println(SelectedStatus);
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithService(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithIDAndSubject(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
                 .and(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithIDAndStatus(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
                 .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithIDAndService(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
                 .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithSubjectAndStatus(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
                 .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithSubjectAndService(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
                 .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithStatusAndService(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
                 .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithIDAndSubjectAndStatus(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
                 .and(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
                 .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithIDAndSubjectAndService(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
                 .and(Ticket.TICKET.SUBJECT.contains((SelectedSubject)))
                 .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithIDAndStatusAndService(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
                 .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
                 .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
 
     public static Result<Record> SelectTicketWithSubjectAndStatusAndService(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.SUBJECT.eq(SelectedSubject))
                 .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
                 .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
     public static Result<Record> SelectTicketWithAll(){
-        results = create.select()
+        TicketSearchResults = create.select()
                 .from(Ticket.TICKET)
                 .where(Ticket.TICKET.CLIENT_ID.eq(parseInt(SelectedClientid)))
                 .and(Ticket.TICKET.STATUS_ID.eq(SelectedStatus))
                 .and(Ticket.TICKET.SERVICE_TYPE_ID.eq(SelectedService))
                 .and(Ticket.TICKET.SUBJECT.eq(SelectedSubject))
                 .fetch();
-        System.out.println(results);
-        return results;
+        System.out.println(TicketSearchResults);
+        return TicketSearchResults;
     }
     public ticketdatabase() throws SQLException {
     }}

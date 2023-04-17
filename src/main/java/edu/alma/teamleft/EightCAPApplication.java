@@ -12,7 +12,7 @@ public class EightCAPApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(EightCAPApplication.class.getResource("EightCAP_Scene_Builder.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+        stage.setTitle("EightCAP");
         stage.setScene(scene);
         stage.show();
     }
