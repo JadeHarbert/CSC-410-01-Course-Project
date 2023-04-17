@@ -52,22 +52,22 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="530.0" prefWidth="1007.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
-  <children>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" VBox.vgrow="ALWAYS">
-      <children>
-        <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" text="Drag components from Library here…" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
-          <font>
-            <Font size="18.0" />
-          </font>
-        </Label>
+<VBox prefHeight="530.0" prefWidth="1007.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.alma.teamleft.EightCapController">
+   <children>
+      <AnchorPane maxHeight="-1.0" maxWidth="-1.0" VBox.vgrow="ALWAYS">
+         <children>
+            <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" text="Drag components from Library here…" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
             <TabPane prefHeight="461.0" prefWidth="721.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <tabs>
-                <Tab text="Add Client">
-                  <content>
+               <tabs>
+                  <Tab text="Add Client">
+                     <content>
                         <ScrollPane prefHeight="220.0" prefWidth="657.0">
                            <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="382.0" prefWidth="642.0">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="382.0" prefWidth="642.0">
                                  <children>
                                     <HBox prefHeight="348.0" prefWidth="596.0">
                                        <children>
@@ -345,17 +345,17 @@
                               </AnchorPane>
                            </content>
                         </ScrollPane>
-                  </content>
-                </Tab>
-                  <Tab fx:id="dbClientID" text="Client Database">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     </content>
+                  </Tab>
+                  <Tab fx:id="dbClientID2" text="Client Database">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <VBox prefHeight="432.0" prefWidth="721.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <Accordion prefHeight="576.0" prefWidth="1007.0">
-                                      <panes>
-                                        <TitledPane animated="false" prefHeight="183.0" prefWidth="1007.0" text="Filter">
+                                       <panes>
+                                          <TitledPane animated="false" prefHeight="183.0" prefWidth="1007.0" text="Filter">
                                              <content>
                                                 <ScrollPane prefHeight="292.0" prefWidth="1005.0">
                                                    <content>
@@ -639,15 +639,15 @@
                                                    </content>
                                                 </ScrollPane>
                                              </content>
-                                        </TitledPane>
+                                          </TitledPane>
                                           <TitledPane prefHeight="770.0" prefWidth="1007.0" text="Database">
                                              <content>
                                                 <ScrollPane>
                                                    <content>
                                                       <TableView>
-                                                        <columns>
-                                                          <TableColumn fx:id="dbClientIDColumn" prefWidth="75.0" text="ID" />
-                                                          <TableColumn fx:id="dbClientFirstNameColumn" prefWidth="75.0" text="First Name" />
+                                                         <columns>
+                                                            <TableColumn fx:id="dbClientIDColumn" prefWidth="75.0" text="ID" />
+                                                            <TableColumn fx:id="dbClientFirstNameColumn" prefWidth="75.0" text="First Name" />
                                                             <TableColumn fx:id="dbClientEmailColumn" prefWidth="75.0" text="E-mail" />
                                                             <TableColumn fx:id="dbClientPhoneNumberColumn" prefWidth="75.0" text="Phone Number" />
                                                             <TableColumn fx:id="dbClientDOBColumn" prefWidth="75.0" text="Date of Birth" />
@@ -659,20 +659,20 @@
                                                             <TableColumn fx:id="dbClientPrescreenColumn" prefWidth="75.0" text="Prescreen Date" />
                                                             <TableColumn fx:id="dbClientDOEColumn" prefWidth="75.0" text="Date Of Entry" />
                                                             <TableColumn fx:id="dbClientNotesColumn" prefWidth="75.0" text="Notes" />
-                                                        </columns>
+                                                         </columns>
                                                       </TableView>
                                                    </content>
                                                 </ScrollPane>
                                              </content>
                                           </TitledPane>
-                                      </panes>
+                                       </panes>
                                     </Accordion>
                                  </children>
                               </VBox>
                            </children></AnchorPane>
-                    </content>
+                     </content>
                   </Tab>
-                <Tab text="Add Ticket">
+                  <Tab text="Add Ticket">
                      <content>
                         <HBox prefHeight="100.0" prefWidth="200.0">
                            <children>
@@ -745,7 +745,7 @@
                            </children>
                         </HBox>
                      </content>
-                </Tab>
+                  </Tab>
                   <Tab text="Ticket Database">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -978,9 +978,9 @@
                         </AnchorPane>
                      </content>
                   </Tab>
-              </tabs>
+               </tabs>
             </TabPane>
-      </children>
-    </AnchorPane>
-  </children>
+         </children>
+      </AnchorPane>
+   </children>
 </VBox>
