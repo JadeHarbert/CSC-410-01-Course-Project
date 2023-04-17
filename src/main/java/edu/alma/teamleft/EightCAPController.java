@@ -5,8 +5,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.jooq.DeleteOrderByStep;
 import org.jooq.Result;
 import org.jooq.Record;
+import org.jooq.conf.ParamCastMode;
 import org.jooq.impl.QOM;
 
 import java.sql.SQLOutput;
@@ -42,6 +44,7 @@ public class EightCAPController {
     public DatePicker ticketCallDate;
 
     public TextField dbClientID;
+
     public TextField dbClientFirstName;
     public TextField dbCLientLastName;
     public DatePicker dbClientDOB;
@@ -61,7 +64,6 @@ public class EightCAPController {
     public Integer CurrentClientDBA;
     public Integer CurrentClientHMIS;
     public String CurrentClientEmail;
-    public Integer CurrentClientPhoneNumber;
 
 
 
@@ -109,122 +111,2919 @@ public class EightCAPController {
     }
 
     public void ClientSearch(ActionEvent actionEvent) {
-        Result ClientSearchResults;
-        if(dbClientID != null) {
-            CurrentClientID = parseInt(dbClientID.getText());
+        Result ClientSearchResults = null;
+        try {
+            if (dbClientID != null) {
+                CurrentClientID = parseInt(dbClientID.getText());
+            }
+            if (dbClientID.getText().equals("")) {
+                CurrentClientID = null;
+            }
+        } catch (Exception e) {
+            CurrentClientID = null;
         }
-        if(dbClientFirstName != null) {
+        if (dbClientFirstName != null) {
             CurrentClientFirstName = dbClientFirstName.getText();
         }
-        if(dbCLientLastName != null) {
+        if (dbClientFirstName.getText().equals("")) {
+            CurrentClientFirstName = null;
+        }
+        if (dbCLientLastName != null) {
             CurrentClientLastName = dbCLientLastName.getText();
         }
-        if(dbClientDOB != null) {
+        if (dbCLientLastName.getText().equals("")) {
+            CurrentClientLastName = null;
+        }
+        if (dbClientDOB != null) {
             CurrentClientDOB = dbClientDOB.getValue();
         }
         try {
-            if(dbClientCounty.getValue() == "Montcalm"){
+            if (dbClientCounty.getValue().equals("Montcalm")) {
                 CurrentClientCounty = 1;
-            }
-            else if (dbClientCounty.getValue() == "Gratiot") {
+            } else if (dbClientCounty.getValue().equals("Gratiot")) {
                 CurrentClientCounty = 2;
-            }
-            else if (dbClientCounty.getValue() == "Ionia") {
+            } else if (dbClientCounty.getValue().equals("Ionia")) {
                 CurrentClientCounty = 3;
-            }
-            else if (dbClientCounty.getValue() == "Isabella") {
+            } else if (dbClientCounty.getValue().equals("Isabella")) {
                 CurrentClientCounty = 4;
-            }
-            else{
+            } else {
                 CurrentClientCounty = null;
             }
         } // Set County
-        catch (Exception e){
+        catch (Exception e) {
             CurrentClientCounty = null;
         }
         try {
-            if(dbClientPCM.getValue() == "phone"){
+            if (dbClientPCM.getValue() == "phone") {
                 CurrentClientPCM = 1;
-            }
-            else if (dbClientPCM.getValue() == "WI-FI Phone") {
+            } else if (dbClientPCM.getValue() == "WI-FI Phone") {
                 CurrentClientPCM = 2;
-            }
-            else if (dbClientPCM.getValue() == "email") {
+            } else if (dbClientPCM.getValue() == "email") {
                 CurrentClientPCM = 3;
-            }
-            else {
+            } else {
                 CurrentClientPCM = null;
             }
         } // Set Preferred Contact Method
         catch (Exception e) {
             CurrentClientPCM = null;
         }
-        if(dbClientDBA.getText() != null) {
-            CurrentClientDBA = parseInt(dbClientDBA.getText());
+        try {
+            if (dbClientDBA.getText() != null) {
+                CurrentClientDBA = parseInt(dbClientDBA.getText());
+            }
+            if (dbClientDBA.getText().equals("")) {
+                CurrentClientDBA = null;
+            }
+        } catch (Exception e) {
+            CurrentClientDBA = null;
         }
-        if(dbClientHMIS.getText() != null) {
-            CurrentClientHMIS = parseInt(dbClientHMIS.getText());
+        try {
+            if (dbClientHMIS.getText() != null) {
+                CurrentClientHMIS = parseInt(dbClientHMIS.getText());
+            }
+            if (dbClientHMIS.getText().equals("")) {
+                CurrentClientHMIS = null;
+            }
+        } catch (Exception e) {
+            CurrentClientHMIS = null;
         }
-        if(dbClientEmail.getText() != null){
+        if (dbClientEmail.getText() != null) {
             CurrentClientEmail = dbClientEmail.getText();
+        }
+        if (dbClientEmail.getText().equals("")) {
+            CurrentClientEmail = null;
         }
        /* if(dbClientPhoneNumber.getText() != null) {
             CurrentClientPhoneNumber = parseInt(dbClientPhoneNumber.getText());
         }*/
-        if(CurrentClientID == null){
-            if(CurrentClientFirstName == null){
+        if (CurrentClientID == null) {
+            if (CurrentClientFirstName == null) {
+                if (CurrentClientLastName == null) {
+                    if (CurrentClientDOB == null) {
+                        if (CurrentClientCounty == null) {
+                            if (CurrentClientPCM == null) {
+                                if (CurrentClientDBA == null) {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) { // All Null
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else { // Email Not Null
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else { // HMIS not null, Email Not Checked
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {// HMIS not null, Email not null
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                } else { // DBA not null, hmis not checked, email not checked
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {//DBA not null, hmis not null, email not checked
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            } else { //PCM not null, dba not checked, hmis not checked, email not checked
+                                if (CurrentClientDBA == null) {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else { // PCM not null, Email Not null
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {// PCM not null, hmis not null, email not checked
+                                        if (dbClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                } else { // PCM not null, dba not null, hmis not checked, email not checked
+                                    if (dbClientHMIS == null) {
+                                        if (dbClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {//PCM not null, dba not null, email not null
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else { // PCM not null, dba not null, hmis not null, email not checked
+                                        if (dbClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        } else { // County not null, PCM not checked, DBA not checked, HMIS not checked, Email not checked
+                            if (CurrentClientPCM == null) {
+                                if (CurrentClientDBA == null) {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .fetch();
+                                        } else {//county, email not null
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else { // county, hmis not null, email not checked
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                } else { // County not null, dba not null, hmis not checked, email not checked
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {// County not null, dba not null, hmis not null, email not checked
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            } else {// County not null, PCM not null, dba not checked, hmis not checked, email not checked
+                                if (CurrentClientDBA == null) {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else { // county not null, pcm not null, hmis not null, email not checked
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                } else { // county not null, pcm not null, dba not null, hmis not checked, email not checked
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {//DOB not null, County not checked,pcm not checked, dba not checked, hmis not checked, email not checked
+                        if (CurrentClientCounty == null) {
+                            if (CurrentClientPCM == null) {
+                                if (CurrentClientDBA == null) {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                } else {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            } else {// DOB not null, pcm not null, dba not checked, hmis not checked, email not checked
+                                if (CurrentClientDBA == null) {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                } else {// DOB not null, pcm not null, dba not null, hmis not checked, email not checked
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {// dob not null, county not null, pcm not checked, dba not checked, hmis not checked, email not checked
+                            if (CurrentClientPCM == null) {
+                                if (CurrentClientDBA == null) {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                } else {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            } else { //DOB not null, county not null, pcm not null, dba not checked, hmis not checked, email not checked
+                                if (CurrentClientDBA == null) {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                } else {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {// Last name not null, dob not checked, county not checked, pcm not checked, dba not checked, hmis not checked, email not checked
+                    if (CurrentClientDOB == null) {
+                        if (CurrentClientCounty == null) {
+                            if (CurrentClientPCM == null) {
+                                if (CurrentClientDBA == null) {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                } else { // last name not null, dba not null, hmis not checked, email not checked
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            } else {// Last name not null, pcm not null, DBA not checked, HMIS not checked, email not checked
+                                if (CurrentClientDBA == null) {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                } else {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {// Last name not null, county not null, pcm not checked, dba not checked, hmis not checked, email not checked
+                            if (CurrentClientPCM == null) {
+                                if (CurrentClientDBA == null) {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                } else {//Last name not null, county not null, dba not null, hmis not checked, email not checked
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            } else {// Last name not null, county not null, pcm not null, dba not checked, hmis not checked, email not checked
+                                if (CurrentClientDBA == null) {
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                } else {// Last name not null, county not null, pcm not null, dba not null, hmis not checked, email not checked
+                                    if (CurrentClientHMIS == null) {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    } else {
+                                        if (CurrentClientEmail == null) {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        } else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else{ // Last name not null, DOB not null, County not checked, PCM not checked, DBA not checked, HMIS not checked, Email not checked
+                        if(CurrentClientCounty == null){
+                            if(CurrentClientPCM == null){
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                            else{// Last name not null, dob not null, pcm not null, dba not checked, hmis not checked, email not checked
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else{// Last name not null, DOB not null, county not null, pcm not checked, dba not checked, hmis  not checked, email not checked
+                            if(CurrentClientPCM == null){
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                            else{
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                                ClientSearchResults = create.select()
+                                                        .from(Client.CLIENT)
+                                                        .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                        .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                        .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                        .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                        .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                        .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                        .fetch();
+                                                System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else{// First name not null, last name not checked, dob not checked, county not checked, pcm not checked, dba not checked, hmis not checked, email not checked
                 if(CurrentClientLastName == null){
                     if(CurrentClientDOB == null){
                         if(CurrentClientCounty == null){
                             if(CurrentClientPCM == null){
                                 if(CurrentClientDBA == null){
                                     if(CurrentClientHMIS == null){
-                                        if(CurrentClientEmail == null){ // All Null
-                                                            ClientSearchResults = create.select()
-                                                                    .from(Client.CLIENT)
-                                                                    .fetch();
-                                            }
-                                        else{ // Email Not Null
-                                            ClientSearchResults = create.select(Client.CLIENT.EMAIL)
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
                                                     .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
                                                     .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
                                         }
                                     }
-                                    else{ // HMIS not null, Email Not Checked
+                                    else{
                                         if(CurrentClientEmail == null){
-                                            ClientSearchResults = create.select(Client.CLIENT.HMIS)
+                                            ClientSearchResults = create.select()
                                                     .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
                                                     .fetch();
+                                            System.out.println(ClientSearchResults);
                                         }
-                                        else{// HMIS not null, Email not null
-                                            ClientSearchResults = create.select(Client.CLIENT.HMIS, Client.CLIENT.EMAIL)
+                                        else{
+                                            ClientSearchResults = create.select()
                                                     .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
                                                     .fetch();
+                                            System.out.println(ClientSearchResults);
                                         }
                                     }
                                 }
-                                else{ // DBA not null, hmis not checked, email not checked
+                                else{
                                     if(CurrentClientHMIS == null){
                                         if(CurrentClientEmail == null){
-                                            ClientSearchResults = create.select(Client.CLIENT.DBA_ID)
+                                            ClientSearchResults = create.select()
                                                     .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
                                                     .fetch();
+                                            System.out.println(ClientSearchResults);
                                         }
                                         else{
-                                            ClientSearchResults = create.select(Client.CLIENT.DBA_ID, Client.CLIENT.EMAIL)
+                                            ClientSearchResults = create.select()
                                                     .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
                                                     .fetch();
-                                            }
+                                            System.out.println(ClientSearchResults);
                                         }
                                     }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                            else{
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else{// First name not null,county not null, pcm not checked, dba not checked, hmis not checked, email not checked
+                            if(CurrentClientPCM == null){
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                            else{
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else{// First name not null, dob not null, county not checked, pcm not checked, dba not checked, hmis not checked, email not checked
+                        if(CurrentClientCounty == null){
+                            if(CurrentClientPCM == null){
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else {
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                            else{
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else{
+                            if(CurrentClientPCM == null){
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                            else{
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else{// First name not null, last name not null, dob not checked, county not checked, pcm not checked, dba not checked, hmis not checked, email not checked
+                    if(CurrentClientDOB == null){
+                        if(CurrentClientCounty == null){
+                            if(CurrentClientPCM == null){
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                            else{
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else{
+                            if(CurrentClientPCM == null){
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                            else{
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else{ // First Name not null, last name not null, dob not null, county not checked, etc.
+                        if(CurrentClientCounty == null){
+                            if(CurrentClientPCM == null){
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                            else{
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.PREFERRED_CONTACT_ID.eq(CurrentClientPCM))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else{
+                            if(CurrentClientPCM == null){
+                                if(CurrentClientDBA == null){
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
+                                else{
+                                    if(CurrentClientHMIS == null){
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                    else{
+                                        if(CurrentClientEmail == null){
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                        else{
+                                            ClientSearchResults = create.select()
+                                                    .from(Client.CLIENT)
+                                                    .where(Client.CLIENT.FIRST_NAME.eq(CurrentClientFirstName))
+                                                    .and(Client.CLIENT.LAST_NAME.eq(CurrentClientLastName))
+                                                    .and(Client.CLIENT.DATE_OF_BIRTH.eq(CurrentClientDOB))
+                                                    .and(Client.CLIENT.COUNTY_ID.eq(CurrentClientCounty))
+                                                    .and(Client.CLIENT.DBA_ID.eq(CurrentClientDBA))
+                                                    .and(Client.CLIENT.HMIS.eq(CurrentClientHMIS))
+                                                    .and(Client.CLIENT.EMAIL.contains(CurrentClientEmail))
+                                                    .fetch();
+                                            System.out.println(ClientSearchResults);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
+        else{
+            ClientSearchResults = create.select()
+                    .from(Client.CLIENT)
+                    .where(Client.CLIENT.CLIENT_ID.eq(CurrentClientID))
+                    .fetch();
+        }
     }
-
 
     public void AddTicket(ActionEvent actionEvent) {
         NewTicketSubject = ticketSubject.getText();
@@ -264,8 +3063,6 @@ public class EightCAPController {
                 if (dbTicketStatus.getValue().equals("Pending Prescreening")) {
                     SelectedStatus = 4;
                 }
-                System.out.println(dbTicketStatus.getValue());
-                System.out.println(SelectedStatus);
             }
             else{
                 SelectedStatus = null;

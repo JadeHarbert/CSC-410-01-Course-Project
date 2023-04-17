@@ -11,7 +11,7 @@ public class EightCAPApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(EightCAPApplication.class.getResource("EightCAP_Scene_Builder.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
         stage.setTitle("EightCAP");
         stage.setScene(scene);
         stage.show();
