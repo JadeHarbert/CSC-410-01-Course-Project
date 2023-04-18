@@ -820,6 +820,8 @@
                                        <VBox.margin>
                                           <Insets top="5.0" />
                                        </VBox.margin>
+                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Ticket Status" />
+                                       <ChoiceBox fx:id="statusupdate" prefWidth="150.0" />
                                     </HBox>
                                     <Button fx:id="followUpAddFollowUpButton" mnemonicParsing="false" onAction="#AddFollowUP" text="Add Follow Up">
                                        <VBox.margin>

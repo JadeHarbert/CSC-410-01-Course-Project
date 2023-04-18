@@ -24,67 +24,35 @@ import static java.lang.Integer.parseInt;
 
 public class EightCAPController {
 
-    public TextField dbTicketSubject;
-    public TextField dbTicketClientID;
-    public ChoiceBox dbTicketStatus;
-    public ChoiceBox dbTicketService;
-    public TextField ticketSubject;
-    public TextArea ticketDetails;
-    public TextField ticketClient;
-    public ChoiceBox ticketService;
-    public TextField followUpTicketID;
-    public TextArea followUpOutcome;
-    public String NewTicketSubject;
-    public String NewTicketDetails;
-    public Integer NewTicketClient;
-    public Integer NewTicketService;
-    public Integer NewFollowUpTicket;
-    public String NewFollowupOutcome;
+    public TextField dbTicketSubject, dbTicketClientID, ticketSubject, ticketClient, followUpTicketID,
+            dbClientID, dbClientFirstName,  dbCLientLastName,  dbClientDBA, dbClientHMIS, dbClientEmail,
+            dbClientPhoneNumber;
+    public ChoiceBox dbTicketStatus, dbTicketService, ticketService, dbClientCounty, dbClientPCM;
+    public TextArea ticketDetails, followUpOutcome;
+    public String NewTicketSubject,  NewTicketDetails, NewFollowupOutcome, CurrentClientFirstName, CurrentClientLastName,
+    CurrentClientEmail;
+    public Integer NewTicketClient, NewTicketService, NewFollowUpTicket, CurrentClientID, CurrentClientCounty,
+            CurrentClientPCM, CurrentClientDBA, CurrentClientHMIS, NewFollowupStatus;
     public LocalDateTime NewTicketCallDate;
-    public DatePicker ticketCallDate;
-
-    public TextField dbClientID;
-
-    public TextField dbClientFirstName;
-    public TextField dbCLientLastName;
-    public DatePicker dbClientDOB;
-    public ChoiceBox dbClientCounty;
-    public ChoiceBox dbClientPCM;
-    public TextField dbClientDBA;
-    public TextField dbClientHMIS;
-    public TextField dbClientEmail;
-    public TextField dbClientPhoneNumber;
-
-    public Integer CurrentClientID;
-    public String CurrentClientFirstName;
-    public String CurrentClientLastName;
+    public DatePicker ticketCallDate, dbClientDOB;
     public LocalDate CurrentClientDOB;
-    public Integer CurrentClientCounty;
-    public Integer CurrentClientPCM;
-    public Integer CurrentClientDBA;
-    public Integer CurrentClientHMIS;
-    public String CurrentClientEmail;
-
-
-
+    public ChoiceBox statusupdate;
     Result<Record> statuses = create.select()
             .from(Status.STATUS)
             .fetch();
-
     Result<Record> services = create.select()
             .from(Service.SERVICE)
             .fetch();
-
     Result<Record> counties = create.select()
             .from(County.COUNTY)
             .fetch();
-
     Result<Record> contactmethods = create.select()
             .from(PreferredContact.PREFERRED_CONTACT)
             .fetch();
     public void initialize() {
         for (Record r : statuses) {
             dbTicketStatus.getItems().add((r.getValue(Status.STATUS.STATUS_NAME)));
+            statusupdate.getItems().add((r.getValue(Status.STATUS.STATUS_NAME)));
         }
         for (Record r : services) {
             dbTicketService.getItems().add((r.getValue(Service.SERVICE.SERVICE_NAME)));
@@ -3171,8 +3139,24 @@ public class EightCAPController {
     public void AddFollowUP(ActionEvent actionEvent) {
         NewFollowUpTicket = parseInt(followUpTicketID.getText());
         NewFollowupOutcome = followUpOutcome.getText();
+        if(statusupdate.getValue().equals("Open")){
+            NewFollowupStatus = 1;
+        }
+        if(statusupdate.getValue().equals("Closed")){
+            NewFollowupStatus = 2;
+        }
+        if(statusupdate.getValue().equals("Waiting On Client")){
+            NewFollowupStatus = 3;
+        }
+        if(statusupdate.getValue().equals("Pending Prescreening")){
+            NewFollowupStatus = 4;
+        }
         create.insertInto(Followups.FOLLOWUPS, Followups.FOLLOWUPS.TICKET_ID, Followups.FOLLOWUPS.FOLLOWUP_DATE, Followups.FOLLOWUPS.FOLLOWUP_OUTCOME)
                 .values(NewFollowUpTicket, LocalDateTime.now(), NewFollowupOutcome)
+                .execute();
+        create.update(Ticket.TICKET)
+                .set(Ticket.TICKET.STATUS_ID, NewFollowupStatus)
+                .where(Ticket.TICKET.TICKET_ID.eq(NewFollowUpTicket))
                 .execute();
     }
 
